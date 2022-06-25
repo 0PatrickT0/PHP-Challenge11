@@ -38,8 +38,25 @@ $pdo = new \PDO(DSN, USER, PASS);
 </head>
 
 <body>
-
     <?php
+    /*if (isset($_POST['submit'])) {
+    /*$firstname = $_POST['user_firstname'];*/
+    /*$lastname = $_POST['user_lastname'];*/
+    /*$query = "INSERT INTO friend (firstname, lastname) VALUES ('$firstname', '$lastname')";*/
+    /*$statement = $pdo->exec($query);*/
+    $firstname = trim($_POST['user_firstname']);
+    $lastname = trim($_POST['user_lastname']);
+
+    $query = 'INSERT INTO friend (firstname, lastname) VALUES (:firstname, :lastname)';
+    $statement = $pdo->prepare($query);
+
+    $statement->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
+    $statement->bindValue(':lastname', $lastname, \PDO::PARAM_STR);
+
+    $statement->execute();
+
+    $friends = $statement->fetchAll();
+
     $query = 'SELECT * FROM friend';
     $statement = $pdo->query($query);
     $friends = $statement->fetchAll();
@@ -51,37 +68,17 @@ $pdo = new \PDO(DSN, USER, PASS);
     ?>
     <form action="" method="post">
         <div>
-            <label for="firstname">Nom :</label>
+            <label for="firstname">Prénom :</label>
             <input type="text" id="firstname" name="user_firstname" required>
         </div>
         <div>
-            <label for="lastname">Prenom :</label>
+            <label for="lastname">Nom :</label>
             <input type="text" id="lastname" name="user_lastname" required>
         </div>
         <div class="button">
             <button type="submit" name="submit">Ajouter à la liste</button>
         </div>
     </form>
-    <?php
-    if (isset($_POST['submit'])) {
-        /*$firstname = $_POST['user_firstname'];*/
-        /*$lastname = $_POST['user_lastname'];*/
-        /*$query = "INSERT INTO friend (firstname, lastname) VALUES ('$firstname', '$lastname')";*/
-        /*$statement = $pdo->exec($query);*/
-        $firstname = trim($_POST['user_firstname']);
-        $lastname = trim($_POST['user_lastname']);
-
-        $query = 'INSERT INTO friend (firstname, lastname) VALUES (:firstname, :lastname)';
-        $statement = $pdo->prepare($query);
-
-        $statement->bindValue(':firstname', $firstname, \PDO::PARAM_STR);
-        $statement->bindValue(':lastname', $lastname, \PDO::PARAM_STR);
-
-        $statement->execute();
-
-        $friends = $statement->fetchAll();
-    }
-    ?>
 </body>
 
 </html>
